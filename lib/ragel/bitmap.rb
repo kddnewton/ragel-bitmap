@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'ragel/bitmap/version'
 
 module Ragel
