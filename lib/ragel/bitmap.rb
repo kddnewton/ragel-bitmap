@@ -14,5 +14,11 @@ module Ragel
     def [](index)
       (bitmap >> (width * index)) & (2**width - 1)
     end
+
+    def self.replace(filepath)
+      require 'ragel/bitmap/replace'
+
+      File.write(filepath, Replace.replace(File.read(filepath)))
+    end
   end
 end

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'test_helper'
+require 'ragel/bitmap/replace'
 
 module Ragel
   class BitmapTest < Minitest::Test
@@ -24,6 +25,41 @@ module Ragel
       numbers.each_with_index do |number, index|
         assert_equal number, bitmap[index]
       end
+    end
+
+    def test_replace
+      source = <<~RUBY
+        module Parser
+          self._trans_keys = [
+            1, 2, 3, 4, 5
+          ]
+        end
+      RUBY
+
+      expected = <<~RUBY
+        module Parser
+          self._trans_keys = ::Ragel::Bitmap.new(3, 22737)
+        end
+      RUBY
+
+      assert_equal expected, Bitmap::Replace.replace(source)
+    end
+
+    class NonComputeTable < Bitmap::Replace::Table
+      private def source_from(*)
+        '-- REPLACED --'
+      end
+    end
+
+    def test_replace_fixture
+      fixture = File.join('fixtures', 'address_lists_parser.rb')
+      source = File.read(File.expand_path(fixture, __dir__))
+
+      replaced =
+        Bitmap::Replace::Table.stub(:new, NonComputeTable.method(:new)) do
+          Bitmap::Replace.replace(source)
+        end
+      assert_equal 7, replaced.scan('-- REPLACED --').size
     end
 
     private
