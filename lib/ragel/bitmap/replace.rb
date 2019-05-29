@@ -4,14 +4,17 @@ require 'ripper'
 
 module Ragel
   class Bitmap
+    # A ruby parser that finds instances of table declarations in a
+    # ragel-outputted file.
     class Replace < Ripper::SexpBuilderPP
+      # Represents a table declaration in the source
       class Table
         attr_reader :source, :start_line, :end_line
 
-        def initialize(name, numbers, start_line, end_line)
-          @source = source_from(name, numbers)
-          @start_line = start_line
-          @end_line = end_line
+        def initialize(left, right, lineno)
+          @source = source_from(left[3][1], right[1].map { |int| int[1].to_i })
+          @start_line = left[1][1][2][0] - 1
+          @end_line = lineno
         end
 
         def source_from(name, numbers)
@@ -25,6 +28,27 @@ module Ragel
         end
       end
 
+      # Represents the source as it changes
+      class Buffer
+        attr_reader :lines
+
+        def initialize(source)
+          @lines = source.split("\n")
+        end
+
+        def replace(table)
+          buffer = lines[table.start_line][/\A\s+/]
+          source = ["#{buffer}#{table.source}"]
+
+          @lines =
+            lines[0...table.start_line] + source + lines[table.end_line..-1]
+        end
+
+        def to_source
+          "#{lines.join("\n")}\n"
+        end
+      end
+
       attr_reader :tables
 
       def initialize(*)
@@ -32,24 +56,26 @@ module Ragel
         @tables = []
       end
 
-      def self.replace(source)
-        replace = Replace.new(source)
-        replace.parse
-
-        if replace.error?
-          STDERR.puts 'Invalid ruby'
-          exit 1
+      class << self
+        def replace(source)
+          buffer = Buffer.new(source)
+          tables_from(source).reverse_each { |table| buffer.replace(table) }
+          buffer.to_source
         end
 
-        lines = source.split("\n")
-        replace.tables.reverse_each do |table|
-          buffer = lines[table.start_line][/\A\s+/]
-          source = ["#{buffer}#{table.source}"]
-          lines =
-            lines[0...table.start_line] + source + lines[table.end_line..-1]
-        end
+        private
 
-        lines.join("\n") + "\n"
+        def tables_from(source)
+          replace = new(source)
+          replace.parse
+
+          if replace.error?
+            warn 'Invalid ruby'
+            exit 1
+          end
+
+          replace.tables
+        end
       end
 
       private
@@ -58,13 +84,7 @@ module Ragel
         super.tap do
           next if left[0] != :field || right[0] != :array
 
-          tables <<
-            Table.new(
-              left[3][1],
-              right[1].map { |int| int[1].to_i },
-              left[1][1][2][0] - 1,
-              right[1].max_by { |int| int[2][0] }[2][0] + 1
-            )
+          tables << Table.new(left, right, lineno)
         end
       end
     end

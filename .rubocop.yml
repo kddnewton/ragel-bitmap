@@ -3,4 +3,5 @@ AllCops:
   DisplayStyleGuide: true
   TargetRubyVersion: 2.6
   Exclude:
+  - 'test/ragel/fixtures/*'
   - 'vendor/**/*'

@@ -28,25 +28,25 @@ module Ragel
     end
 
     def test_replace
-      source = <<~RUBY
-        module Parser
-          self._trans_keys = [
-            1, 2, 3, 4, 5
-          ]
-        end
-      RUBY
-
       expected = <<~RUBY
         module Parser
           self._trans_keys = ::Ragel::Bitmap.new(3, 22737)
         end
       RUBY
 
-      assert_equal expected, Bitmap::Replace.replace(source)
+      assert_equal expected, Bitmap::Replace.replace(<<~RUBY)
+        module Parser
+          self._trans_keys = [
+            1, 2, 3, 4, 5
+          ]
+        end
+      RUBY
     end
 
     class NonComputeTable < Bitmap::Replace::Table
-      private def source_from(*)
+      private
+
+      def source_from(*)
         '-- REPLACED --'
       end
     end

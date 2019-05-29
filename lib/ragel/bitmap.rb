@@ -3,6 +3,9 @@
 require 'ragel/bitmap/version'
 
 module Ragel
+  # An integer bitmap that contains a width (the number of bytes that the
+  # largest integer requires) and a bitmap (an integer that is the combination
+  # of the element integers)
   class Bitmap
     attr_reader :width, :bitmap
 
