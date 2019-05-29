@@ -1,8 +1,8 @@
 # Ragel::Bitmap
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/ragel/bitmap`. To experiment with that code, run `bin/console` for an interactive prompt.
+[![Build Status](https://travis-ci.com/kddeisz/ragel-bitmap.svg?branch=master)](https://travis-ci.com/kddeisz/ragel-bitmap)
 
-TODO: Delete this and the text above, and describe your gem
+Use bitmaps for ragel-generated code instead of arrays.
 
 ## Installation
 
@@ -22,7 +22,7 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Use `Ragel::Bitmap.replace(filepath)` where `filepath` is a path to a ragel-generated file. Require `ragel/bitmap` in your code. Profit!
 
 ## Development
 
