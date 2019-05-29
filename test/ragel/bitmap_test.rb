@@ -6,8 +6,17 @@ module Ragel
       refute_nil Bitmap::VERSION
     end
 
-    def test_basic_bitmap
+    def test_basic
       numbers = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+      bitmap = bitmap_from(numbers)
+
+      numbers.each_with_index do |number, index|
+        assert_equal number, bitmap[index]
+      end
+    end
+
+    def test_fuzzing
+      numbers = Array.new(10) { (rand * 256).floor }
       bitmap = bitmap_from(numbers)
 
       numbers.each_with_index do |number, index|
