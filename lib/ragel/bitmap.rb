@@ -1,8 +1,16 @@
-require "ragel/bitmap/version"
+require 'ragel/bitmap/version'
 
 module Ragel
-  module Bitmap
-    class Error < StandardError; end
-    # Your code goes here...
+  class Bitmap
+    attr_reader :width, :bitmap
+
+    def initialize(width, bitmap)
+      @width = width
+      @bitmap = bitmap
+    end
+
+    def [](index)
+      (bitmap >> (width * index)) & (2**width - 1)
+    end
   end
 end
