@@ -56,26 +56,21 @@ module Ragel
         @tables = []
       end
 
-      class << self
-        def replace(source)
-          buffer = Buffer.new(source)
-          tables_from(source).reverse_each { |table| buffer.replace(table) }
-          buffer.to_source
+      def each_table(&block)
+        parse
+
+        if error?
+          warn 'Invalid ruby'
+          exit 1
         end
 
-        private
+        tables.reverse_each(&block)
+      end
 
-        def tables_from(source)
-          replace = new(source)
-          replace.parse
-
-          if replace.error?
-            warn 'Invalid ruby'
-            exit 1
-          end
-
-          replace.tables
-        end
+      def self.replace(source)
+        buffer = Buffer.new(source)
+        new(source).each_table { |table| buffer.replace(table) }
+        buffer.to_source
       end
 
       private
