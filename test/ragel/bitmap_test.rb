@@ -30,7 +30,7 @@ module Ragel
     def test_replace
       expected = <<~RUBY
         module Parser
-          self._trans_keys = ::Ragel::Bitmap.new(3, 22737)
+          self._trans_keys = ::Ragel::Bitmap.new(1, "C", "\\x01\\x02\\x03\\x04\\x05")
         end
       RUBY
 
@@ -65,13 +65,7 @@ module Ragel
     private
 
     def bitmap_from(numbers)
-      width = Math.log2(numbers.max).ceil
-      bitmap =
-        numbers.each_with_index.inject(0) do |accum, (number, index)|
-          accum | (number << (width * index))
-        end
-
-      Bitmap.new(width, bitmap)
+      Bitmap.new(*Bitmap::Replace.bitmap_args_from(numbers))
     end
   end
 end

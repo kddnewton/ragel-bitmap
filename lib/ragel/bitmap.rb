@@ -7,15 +7,14 @@ module Ragel
   # largest integer requires) and a bitmap (an integer that is the combination
   # of the element integers)
   class Bitmap
-    attr_reader :width, :bitmap
-
-    def initialize(width, bitmap)
-      @width = width
+    def initialize(size, directive, bitmap)
+      @size = size
+      @directive = directive
       @bitmap = bitmap
     end
 
     def [](index)
-      (bitmap >> (width * index)) & (2**width - 1)
+      @bitmap.byteslice(index * @size, @size).unpack(@directive).first
     end
 
     def self.replace(filepath)

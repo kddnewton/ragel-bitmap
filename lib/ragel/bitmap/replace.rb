@@ -7,6 +7,22 @@ module Ragel
     # A ruby parser that finds instances of table declarations in a
     # ragel-outputted file.
     class Replace < Ripper::SexpBuilderPP
+      DIRECTIVES = { 'C' => 8, 'S' => 16, 'L' => 32, 'Q' => 64 }.freeze
+
+      # Get the required args for a bitmap from a set of numbers
+      def self.bitmap_args_from(numbers)
+        case Math.log2(numbers.max).ceil
+        when 1..8
+          [1, 'C', numbers.pack('C*')]
+        when 9..16
+          [2, 'S', numbers.pack('S*')]
+        when 17..32
+          [3, 'L', numbers.pack('L*')]
+        when 33..64
+          [4, 'Q', numbers.pack('Q*')]
+        end
+      end
+
       # Represents a table declaration in the source
       class Table
         attr_reader :source, :start_line, :end_line
@@ -17,14 +33,15 @@ module Ragel
           @end_line = lineno
         end
 
-        def source_from(name, numbers)
-          width = Math.log2(numbers.max).ceil
-          bitmap =
-            numbers.each_with_index.inject(0) do |accum, (number, index)|
-              accum | (number << (width * index))
-            end
+        private
 
-          "self.#{name} = ::Ragel::Bitmap.new(#{width}, #{bitmap})"
+        def source_from(name, numbers)
+          if numbers.max > 2**64
+            "self.#{name} = [#{numbers.join(', ')}]"
+          else
+            size, directive, bitmap = Replace.bitmap_args_from(numbers)
+            "self.#{name} = ::Ragel::Bitmap.new(#{size}, #{directive.inspect}, #{bitmap.inspect})"
+          end
         end
       end
 
