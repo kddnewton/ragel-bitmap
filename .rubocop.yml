@@ -5,3 +5,6 @@ AllCops:
   Exclude:
   - 'test/ragel/fixtures/*'
   - 'vendor/**/*'
+
+Style/Documentation:
+  Enabled: false

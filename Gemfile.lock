@@ -32,7 +32,7 @@ DEPENDENCIES
   minitest (~> 5.11)
   ragel-bitmap!
   rake (~> 12.3)
-  rubocop (~> 0.70)
+  rubocop (~> 0.72)
 
 BUNDLED WITH
    2.0.1

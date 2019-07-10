@@ -9,28 +9,30 @@ module Ragel
       refute_nil Bitmap::VERSION
     end
 
-    def test_basic
-      numbers = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-      bitmap = bitmap_from(numbers)
+    def test_array8
+      assert_bitmap :Array8, [0, 1, 2]
+    end
 
-      numbers.each_with_index do |number, index|
-        assert_equal number, bitmap[index]
-      end
+    def test_array16
+      assert_bitmap :Array16, [2**8, 2**8 + 1, 2**8 + 2]
+    end
+
+    def test_array24
+      assert_bitmap :Array24, [2**16, 2**16 + 1, 2**16 + 2]
+    end
+
+    def test_array_generic
+      assert_bitmap :ArrayGeneric, [2**24, 2**24 + 1, 2**24 + 2]
     end
 
     def test_fuzzing
-      numbers = Array.new(10) { (rand * 256).floor }
-      bitmap = bitmap_from(numbers)
-
-      numbers.each_with_index do |number, index|
-        assert_equal number, bitmap[index]
-      end
+      assert_bitmap :Array8, Array.new(100) { (rand * 256).floor }
     end
 
     def test_replace
       expected = <<~RUBY
         module Parser
-          self._trans_keys = ::Ragel::Bitmap.new(3, 22737)
+          self._trans_keys = ::Ragel::Bitmap::Array8.new("\\x01\\x02\\x03\\x04\\x05")
         end
       RUBY
 
@@ -64,14 +66,18 @@ module Ragel
 
     private
 
-    def bitmap_from(numbers)
-      width = Math.log2(numbers.max).ceil
-      bitmap =
-        numbers.each_with_index.inject(0) do |accum, (number, index)|
-          accum | (number << (width * index))
-        end
+    def assert_bitmap(type, numbers)
+      bitmap = bitmap_from(numbers)
+      assert_equal type, bitmap.class.name.split('::').last.to_sym
 
-      Bitmap.new(width, bitmap)
+      numbers.each_with_index do |number, index|
+        assert_equal number, bitmap[index]
+      end
+    end
+
+    def bitmap_from(numbers)
+      clazz, strings = Bitmap::Replace.bitmap_args_from(numbers)
+      Bitmap.const_get(clazz).new(*strings)
     end
   end
 end

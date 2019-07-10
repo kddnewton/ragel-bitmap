@@ -3,19 +3,54 @@
 require 'ragel/bitmap/version'
 
 module Ragel
-  # An integer bitmap that contains a width (the number of bytes that the
-  # largest integer requires) and a bitmap (an integer that is the combination
-  # of the element integers)
-  class Bitmap
-    attr_reader :width, :bitmap
+  module Bitmap
+    class Array8
+      def initialize(string)
+        @string = string
+      end
 
-    def initialize(width, bitmap)
-      @width = width
-      @bitmap = bitmap
+      def [](idx)
+        @string.getbyte(idx)
+      end
     end
 
-    def [](index)
-      (bitmap >> (width * index)) & (2**width - 1)
+    class Array16
+      def initialize(highstring, lowstring)
+        @highstring = highstring
+        @lowstring = lowstring
+      end
+
+      def [](idx)
+        (@highstring.getbyte(idx) << 8) | @lowstring.getbyte(idx)
+      end
+    end
+
+    class Array24
+      def initialize(highstring, middlestring, lowstring)
+        @highstring = highstring
+        @middlestring = middlestring
+        @lowstring = lowstring
+      end
+
+      def [](idx)
+        (@highstring.getbyte(idx) << 16) |
+          (@middlestring.getbyte(idx) << 8) |
+          @lowstring.getbyte(idx)
+      end
+    end
+
+    class ArrayGeneric
+      def initialize(*strings)
+        @strings = strings
+      end
+
+      def [](idx)
+        shift = @strings.length * 8
+        @strings.inject(0) do |product, bitmap|
+          shift -= 8
+          product | (bitmap.getbyte(idx) << shift)
+        end
+      end
     end
 
     def self.replace(filepath)

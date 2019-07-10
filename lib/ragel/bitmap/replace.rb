@@ -3,10 +3,36 @@
 require 'ripper'
 
 module Ragel
-  class Bitmap
+  module Bitmap
     # A ruby parser that finds instances of table declarations in a
     # ragel-outputted file.
     class Replace < Ripper::SexpBuilderPP
+      class << self
+        # Get the required args for a bitmap from a set of numbers
+        def bitmap_args_from(numbers)
+          size = (Math.log2(numbers.max) / 8).ceil
+          strings =
+            size.downto(1).map do |index|
+              shift = (index - 1) * 8
+              numbers.map { |number| (number >> shift) & 0xff }.pack('C*')
+            end
+
+          [class_from(size), strings]
+        end
+
+        private
+
+        def class_from(size)
+          case size
+          when 1 then :Array8
+          when 2 then :Array16
+          when 3 then :Array24
+          else
+            :ArrayGeneric
+          end
+        end
+      end
+
       # Represents a table declaration in the source
       class Table
         attr_reader :source, :start_line, :end_line
@@ -17,14 +43,13 @@ module Ragel
           @end_line = lineno
         end
 
-        def source_from(name, numbers)
-          width = Math.log2(numbers.max).ceil
-          bitmap =
-            numbers.each_with_index.inject(0) do |accum, (number, index)|
-              accum | (number << (width * index))
-            end
+        private
 
-          "self.#{name} = ::Ragel::Bitmap.new(#{width}, #{bitmap})"
+        def source_from(name, numbers)
+          clazz, strings = Replace.bitmap_args_from(numbers)
+          arguments = strings.map(&:inspect).join(', ')
+
+          "self.#{name} = ::Ragel::Bitmap::#{clazz}.new(#{arguments})"
         end
       end
 
