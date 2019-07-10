@@ -2,6 +2,15 @@
 
 require 'ragel/bitmap/version'
 
+# Polyfilling `getbyte` in order to support ruby 1.8
+unless ''.respond_to?(:getbyte)
+  class String
+    def getbyte(index)
+      self[index].ord
+    end
+  end
+end
+
 module Ragel
   module Bitmap
     class Array8
