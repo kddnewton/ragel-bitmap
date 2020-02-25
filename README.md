@@ -1,6 +1,7 @@
 # Ragel::Bitmap
 
-[![Build Status](https://travis-ci.com/kddeisz/ragel-bitmap.svg?branch=master)](https://travis-ci.com/kddeisz/ragel-bitmap)
+[![Build Status](https://github.com/kddeisz/ragel-bitmap/workflows/Main/badge.svg)](https://github.com/kddeisz/ragel-bitmap/actions)
+[![Gem Version](https://img.shields.io/gem/v/ragel-bitmap.svg)](https://rubygems.org/gems/ragel-bitmap)
 
 [Ragel](https://www.colm.net/open-source/ragel/) generates ruby code with very large arrays of integers that allocate a lot of memory when required. To reduce memory consumption, this gem replaces those arrays with packed strings.
 
@@ -33,6 +34,8 @@ end
 ```
 
 Then, in your application, add `require 'ragel/bitmap'` before you require your parser. Now you should be off and running!
+
+We also provide a `ragel-bitmap` command that you can execute once this gem is installed. Usage looks like `ragel-bitmap [path]` where `path` is a path to a generated ragel parser.
 
 ## Development
 
