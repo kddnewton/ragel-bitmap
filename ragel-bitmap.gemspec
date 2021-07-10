@@ -7,8 +7,8 @@ require 'ragel/bitmap/version'
 Gem::Specification.new do |spec|
   spec.name          = 'ragel-bitmap'
   spec.version       = Ragel::Bitmap::VERSION
-  spec.authors       = ['Kevin Deisz']
-  spec.email         = ['kevin.deisz@gmail.com']
+  spec.authors       = ['Kevin Newton']
+  spec.email         = ['kddnewton@gmail.com']
 
   spec.summary       = 'Use bitmaps for ragel-generated code instead of arrays'
   spec.homepage      = 'https://github.com/kddeisz/ragel-bitmap'
