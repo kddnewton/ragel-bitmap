@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['kddnewton@gmail.com']
 
   spec.summary       = 'Use bitmaps for ragel-generated code instead of arrays'
-  spec.homepage      = 'https://github.com/kddeisz/ragel-bitmap'
+  spec.homepage      = 'https://github.com/kddnewton/ragel-bitmap'
   spec.license       = 'MIT'
 
   spec.files         =

@@ -1,6 +1,6 @@
 # Ragel::Bitmap
 
-[![Build Status](https://github.com/kddeisz/ragel-bitmap/workflows/Main/badge.svg)](https://github.com/kddeisz/ragel-bitmap/actions)
+[![Build Status](https://github.com/kddnewton/ragel-bitmap/workflows/Main/badge.svg)](https://github.com/kddnewton/ragel-bitmap/actions)
 [![Gem Version](https://img.shields.io/gem/v/ragel-bitmap.svg)](https://rubygems.org/gems/ragel-bitmap)
 
 [Ragel](https://www.colm.net/open-source/ragel/) generates ruby code with very large arrays of integers that allocate a lot of memory when required. To reduce memory consumption, this gem replaces those arrays with packed strings.
@@ -45,7 +45,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/kddeisz/ragel-bitmap.
+Bug reports and pull requests are welcome on GitHub at https://github.com/kddnewton/ragel-bitmap.
 
 ## License
 
