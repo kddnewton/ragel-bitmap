@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ragel-bitmap (0.2.1)
+    ragel-bitmap (0.2.2)
 
 GEM
   remote: https://rubygems.org/
@@ -40,4 +40,4 @@ DEPENDENCIES
   rubocop (~> 1.12)
 
 BUNDLED WITH
-   2.2.3
+   2.3.0.dev

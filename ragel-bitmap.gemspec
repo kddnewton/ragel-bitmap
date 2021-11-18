@@ -1,20 +1,28 @@
 # frozen_string_literal: true
 
-lib = File.expand_path('lib', __dir__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'ragel/bitmap/version'
+require_relative 'lib/ragel/bitmap/version'
+
+version = Ragel::Bitmap::VERSION
+repository = 'https://github.com/kddnewton/ragel-bitmap'
 
 Gem::Specification.new do |spec|
   spec.name          = 'ragel-bitmap'
-  spec.version       = Ragel::Bitmap::VERSION
+  spec.version       = version
   spec.authors       = ['Kevin Newton']
   spec.email         = ['kddnewton@gmail.com']
 
   spec.summary       = 'Use bitmaps for ragel-generated code instead of arrays'
-  spec.homepage      = 'https://github.com/kddnewton/ragel-bitmap'
+  spec.homepage      = repository
   spec.license       = 'MIT'
 
-  spec.files         =
+  spec.metadata = {
+    'bug_tracker_uri' => "#{repository}/issues",
+    'changelog_uri' => "#{repository}/blob/v#{version}/CHANGELOG.md",
+    'source_code_uri' => repository,
+    'rubygems_mfa_required' => 'true'
+  }
+
+  spec.files =
     Dir.chdir(File.expand_path(__dir__)) do
       `git ls-files -z`.split("\x0").reject do |f|
         f.match(%r{^(test|spec|features)/})

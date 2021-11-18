@@ -6,9 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+## [0.2.2] - 2021-11-17
+
 ### Changed
 
 - Take advantage of the new `unpack1` `offset` option.
+- Require MFA for releasing.
 
 ## [0.2.1] - 2019-07-10
 
