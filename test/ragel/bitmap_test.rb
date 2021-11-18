@@ -27,7 +27,7 @@ module Ragel
     end
 
     def test_array64
-      type = Bitmap::Replace.offset? ? :Array64Offset : :Array64
+      type = Bitmap::Replace.offset? ? :Array64Offset : :ArrayGeneric
       assert_bitmap type, [2**64 - 3, 2**64 - 2, 2**64 - 1]
     end
 
