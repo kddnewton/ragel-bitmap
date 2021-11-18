@@ -48,6 +48,42 @@ module Ragel
       end
     end
 
+    class Array32
+      def initialize(first, second, third, fourth)
+        @first = first
+        @second = second
+        @third = third
+        @fourth = fourth
+      end
+
+      def [](idx)
+        (@first.getbyte(idx) << 24) |
+          (@second.getbyte(idx) << 16) |
+          (@third.getbyte(idx) << 8) |
+          @fourth.getbyte(idx)
+      end
+    end
+
+    class Array32Offset
+      def initialize(string)
+        @string = string
+      end
+
+      def [](idx)
+        @string.unpack1('L', offset: idx * 4)
+      end
+    end
+
+    class Array64Offset
+      def initialize(string)
+        @string = string
+      end
+
+      def [](idx)
+        @string.unpack1('Q', offset: idx * 8)
+      end
+    end
+
     class ArrayGeneric
       def initialize(*strings)
         @strings = strings

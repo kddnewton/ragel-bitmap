@@ -14,15 +14,21 @@ module Ragel
     end
 
     def test_array16
-      assert_bitmap :Array16, [2**8, 2**8 + 1, 2**8 + 2]
+      assert_bitmap :Array16, [2**16 - 3, 2**16 - 2, 2**16 - 1]
     end
 
     def test_array24
-      assert_bitmap :Array24, [2**16, 2**16 + 1, 2**16 + 2]
+      assert_bitmap :Array24, [2**24 - 3, 2**24 - 2, 2**24 - 1]
     end
 
-    def test_array_generic
-      assert_bitmap :ArrayGeneric, [2**24, 2**24 + 1, 2**24 + 2]
+    def test_array32
+      type = Bitmap::Replace.offset? ? :Array32Offset : :Array32
+      assert_bitmap type, [2**32 - 3, 2**32 - 2, 2**32 - 1]
+    end
+
+    def test_array64
+      type = Bitmap::Replace.offset? ? :Array64Offset : :Array64
+      assert_bitmap type, [2**64 - 3, 2**64 - 2, 2**64 - 1]
     end
 
     def test_fuzzing
@@ -61,6 +67,7 @@ module Ragel
         Bitmap::Replace::Table.stub(:new, NonComputeTable.method(:new)) do
           Bitmap::Replace.replace(source)
         end
+
       assert_equal 7, replaced.scan('-- REPLACED --').size
     end
 

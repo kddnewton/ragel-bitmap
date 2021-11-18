@@ -1,0 +1,92 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'bundler/inline'
+
+gemfile do
+  source 'https://rubygems.org'
+  gem 'benchmark-ips'
+end
+
+$LOAD_PATH.unshift(File.expand_path('../lib', __dir__))
+require 'ragel/bitmap'
+
+numbers = Array.new(10_000) { rand(2**16) }
+offsets = numbers.pack('S*')
+
+high = numbers.map { |number| number >> 8 }.pack('C*')
+low = numbers.pack('C*')
+
+# Here we're measuring if it's faster to use unpack1 with offset or if it's
+# faster to keep two separate strings around, use getbyte, and | them together
+# for 16-byte unsigned integers.
+Benchmark.ips do |x|
+  x.report('16-byte offsets') do
+    index = rand(10_000)
+    offsets.unpack1('S', offset: index)
+  end
+
+  x.report('16-byte strings') do
+    index = rand(10_000)
+    (high.getbyte(index) << 8) | low.getbyte(index)
+  end
+
+  x.compare!
+end
+
+numbers = Array.new(10_000) { rand(2**32) }
+offsets = numbers.pack('L*')
+high, midhigh, midlow, low =
+  [24, 16, 8, 0].map do |shift|
+    numbers.map { |number| number >> shift }.pack('C*')
+  end
+
+# Here we're measuring the same difference but this time we're using 32-byte
+# unsigned integers instead.
+Benchmark.ips do |x|
+  x.report('32-byte offsets') do
+    index = rand(10_000)
+    offsets.unpack1('L', offset: index)
+  end
+
+  x.report('32-byte strings') do
+    index = rand(10_000)
+    (high.getbyte(index) << 24) |
+      (midhigh.getbyte(index) << 16) |
+      (midlow.getbyte(index) << 8) |
+      low.getbyte(index)
+  end
+
+  x.compare!
+end
+
+numbers = Array.new(10_000) { rand(2**64) }
+offsets = numbers.pack('Q*')
+highest, midhighest, high, midhigh, midlow, low, midlowest, lowest =
+  [56, 48, 40, 32, 24, 16, 8, 0].map do |shift|
+    numbers.map { |number| number >> shift }.pack('C*')
+  end
+
+# Here we're measuring the same difference but this time we're using 64-byte
+# unsigned integers instead.
+Benchmark.ips do |x|
+  x.report('64-byte offsets') do
+    index = rand(10_000)
+    offsets.unpack1('Q', offset: index)
+  end
+
+  x.report('64-byte strings') do
+    index = rand(10_000)
+
+    (highest.getbyte(index) << 56) |
+      (midhighest.getbyte(index) << 48) |
+      (high.getbyte(index) << 40) |
+      (midhigh.getbyte(index) << 32) |
+      (midlow.getbyte(index) << 24) |
+      (low.getbyte(index) << 16) |
+      (midlowest.getbyte(index) << 8) |
+      lowest.getbyte(index)
+  end
+
+  x.compare!
+end
