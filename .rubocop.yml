@@ -1,6 +1,11 @@
+inherit_gem:
+  syntax_tree: config/rubocop.yml
+
 AllCops:
   DisplayCopNames: true
   DisplayStyleGuide: true
+  NewCops: enable
+  SuggestExtensions: false
   TargetRubyVersion: 2.7
   Exclude:
   - '{tmp,vendor,yard}/**/*'
@@ -13,6 +18,9 @@ Layout/LineLength:
   Max: 80
 
 Lint/AmbiguousBlockAssociation:
+  Enabled: false
+
+Lint/AmbiguousOperatorPrecedence:
   Enabled: false
 
 Naming/RescuedExceptionsVariableName:

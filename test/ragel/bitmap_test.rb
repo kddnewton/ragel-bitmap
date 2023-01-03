@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'test_helper'
-require 'ragel/bitmap/replace'
+require "test_helper"
+require "ragel/bitmap/replace"
 
 module Ragel
   class BitmapTest < Minitest::Test
@@ -55,12 +55,12 @@ module Ragel
       private
 
       def source_from(*)
-        '-- REPLACED --'
+        "-- REPLACED --"
       end
     end
 
     def test_replace_fixture
-      fixture = File.join('fixtures', 'address_lists_parser.rb')
+      fixture = File.join("fixtures", "address_lists_parser.rb")
       source = File.read(File.expand_path(fixture, __dir__))
 
       replaced =
@@ -68,14 +68,14 @@ module Ragel
           Bitmap::Replace.replace(source)
         end
 
-      assert_equal 7, replaced.scan('-- REPLACED --').size
+      assert_equal 7, replaced.scan("-- REPLACED --").size
     end
 
     private
 
     def assert_bitmap(type, numbers)
       bitmap = bitmap_from(numbers)
-      assert_equal type, bitmap.class.name.split('::').last.to_sym
+      assert_equal type, bitmap.class.name.split("::").last.to_sym
 
       numbers.each_with_index do |number, index|
         assert_equal number, bitmap[index]

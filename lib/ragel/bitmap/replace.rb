@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'ripper'
+require "ripper"
 
 module Ragel
   module Bitmap
@@ -15,20 +15,20 @@ module Ragel
 
           case size
           when 1
-            [:Array8, [numbers.pack('C*')]]
+            [:Array8, [numbers.pack("C*")]]
           when 2
             [:Array16, strings_from(2, numbers)]
           when 3
             [:Array24, strings_from(3, numbers)]
           when 4
             if offset?
-              [:Array32Offset, [numbers.pack('L*')]]
+              [:Array32Offset, [numbers.pack("L*")]]
             else
               [:Array32, strings_from(4, numbers)]
             end
           when 8
             if offset?
-              [:Array64Offset, [numbers.pack('Q*')]]
+              [:Array64Offset, [numbers.pack("Q*")]]
             else
               [:ArrayGeneric, strings_from(size, numbers)]
             end
@@ -43,9 +43,10 @@ module Ragel
         # then it'll be more efficient than storing multiple strings and
         # shifting.
         def offset?
-          String.instance_method(:unpack1).parameters.any? do |(type, name)|
-            type == :key && name == :offset
-          end
+          String
+            .instance_method(:unpack1)
+            .parameters
+            .any? { |(type, name)| type == :key && name == :offset }
         end
 
         private
@@ -72,10 +73,12 @@ module Ragel
         # (in the example above it's 8 since it's just 2 strings, if it were 3
         # strings then the first string would be shifted by 16, and so on).
         def strings_from(size, numbers)
-          size.downto(1).map do |index|
-            shift = (index - 1) * 8
-            numbers.map { |number| (number >> shift) & 0xff }.pack('C*')
-          end
+          size
+            .downto(1)
+            .map do |index|
+              shift = (index - 1) * 8
+              numbers.map { |number| (number >> shift) & 0xff }.pack("C*")
+            end
         end
       end
 
@@ -93,7 +96,7 @@ module Ragel
 
         def source_from(name, numbers)
           clazz, strings = Replace.bitmap_args_from(numbers)
-          arguments = strings.map(&:inspect).join(', ')
+          arguments = strings.map(&:inspect).join(", ")
 
           "self.#{name} = ::Ragel::Bitmap::#{clazz}.new(#{arguments})"
         end
@@ -131,7 +134,7 @@ module Ragel
         parse
 
         if error?
-          warn 'Invalid ruby'
+          warn "Invalid ruby"
           exit 1
         end
 

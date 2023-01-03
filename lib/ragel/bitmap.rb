@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'ragel/bitmap/version'
+require "ragel/bitmap/version"
 
 # Polyfilling `getbyte` in order to support ruby 1.8
-unless ''.respond_to?(:getbyte)
+unless "".respond_to?(:getbyte)
   class String
     def getbyte(index)
       self[index].ord
@@ -42,8 +42,7 @@ module Ragel
       end
 
       def [](idx)
-        (@highstring.getbyte(idx) << 16) |
-          (@middlestring.getbyte(idx) << 8) |
+        (@highstring.getbyte(idx) << 16) | (@middlestring.getbyte(idx) << 8) |
           @lowstring.getbyte(idx)
       end
     end
@@ -57,10 +56,8 @@ module Ragel
       end
 
       def [](idx)
-        (@first.getbyte(idx) << 24) |
-          (@second.getbyte(idx) << 16) |
-          (@third.getbyte(idx) << 8) |
-          @fourth.getbyte(idx)
+        (@first.getbyte(idx) << 24) | (@second.getbyte(idx) << 16) |
+          (@third.getbyte(idx) << 8) | @fourth.getbyte(idx)
       end
     end
 
@@ -70,7 +67,7 @@ module Ragel
       end
 
       def [](idx)
-        @string.unpack1('L', offset: idx * 4)
+        @string.unpack1("L", offset: idx * 4)
       end
     end
 
@@ -80,7 +77,7 @@ module Ragel
       end
 
       def [](idx)
-        @string.unpack1('Q', offset: idx * 8)
+        @string.unpack1("Q", offset: idx * 8)
       end
     end
 
@@ -99,7 +96,7 @@ module Ragel
     end
 
     def self.replace(filepath)
-      require 'ragel/bitmap/replace'
+      require "ragel/bitmap/replace"
 
       File.write(filepath, Replace.replace(File.read(filepath)))
     end
