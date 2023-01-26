@@ -11,6 +11,9 @@ AllCops:
   - '{tmp,vendor,yard}/**/*'
   - 'test/ragel/fixtures/*'
 
+Gemspec/DevelopmentDependencies:
+  Enabled: false
+
 Gemspec/RequiredRubyVersion:
   Enabled: false
 
