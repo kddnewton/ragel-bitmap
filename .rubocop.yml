@@ -26,6 +26,9 @@ Lint/AmbiguousBlockAssociation:
 Lint/AmbiguousOperatorPrecedence:
   Enabled: false
 
+Metrics:
+  Enabled: false
+
 Naming/RescuedExceptionsVariableName:
   Enabled: false
 

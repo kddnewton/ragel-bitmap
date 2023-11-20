@@ -9,7 +9,6 @@ module Ragel
     class Replace < Ripper::SexpBuilderPP
       class << self
         # Get the required args for a bitmap from a set of numbers
-        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength
         def bitmap_args_from(numbers)
           size = (Math.log2(numbers.max) / 8).ceil
 
@@ -36,7 +35,6 @@ module Ragel
             [:ArrayGeneric, strings_from(size, numbers)]
           end
         end
-        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/MethodLength
 
         # Check if we can use the offset keyword argument for the unpack1 method
         # introduced here: https://bugs.ruby-lang.org/issues/18254. If we can,
