@@ -32,6 +32,9 @@ Metrics:
 Naming/RescuedExceptionsVariableName:
   Enabled: false
 
+Style/ArgumentsForwarding:
+  Enabled: false
+
 Style/Documentation:
   Enabled: false
 
