@@ -130,7 +130,7 @@ module Ragel
         attr_reader :tables
 
         def initialize(tables)
-          super
+          super()
           @tables = tables
         end
 
