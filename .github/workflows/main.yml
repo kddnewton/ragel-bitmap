@@ -16,6 +16,8 @@ jobs:
     - run: bundle exec rake stree:check
   versions:
     uses: ruby/actions/.github/workflows/ruby_versions.yml@master
+    with:
+      engine: cruby
   test:
     needs: versions
     runs-on: ubuntu-latest
